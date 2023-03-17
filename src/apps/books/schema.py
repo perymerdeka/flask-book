@@ -7,4 +7,7 @@ class BookSchema(ma.SQLAlchemyAutoSchema):
         model = BooksModel
         include_fk = True
 
+book_schema = BookSchema()
+books_schema = BookSchema(many=True)
+
 

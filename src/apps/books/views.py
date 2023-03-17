@@ -8,7 +8,7 @@ from apps.books.models import BooksModel
 
 
 # import schema
-from apps.books.schema import BookSchema
+from apps.books.schema import book_schema, books_schema
 
 books_parser = reqparse.RequestParser()
 
@@ -16,21 +16,22 @@ class BooksAPIView(Resource):
     def get(self):
         # logika yang akan diterapkan di API
         books = BooksModel.query.all()
-        book_schema = BookSchema()
 
-        return book_schema.dump(books, many=True)
+        return books_schema.dump(books, many=True)
     
     def post(self):
+        books_parser.add_argument('title', required=True, help="Name cannot be blank!")
+        books_parser.add_argument('description', required=True, help="Name cannot be blank!")
         args = books_parser.parse_args()
+       
         books = BooksModel(title=args['title'], description=args['description'])
          
         # serialisasi object
-        book_schema = BookSchema()
 
         # save ke database
         db.session.add(books)
         db.session.commit()
-        return book_schema.dump(books, many=True)
+        return book_schema.dump(books)
 
 
          
